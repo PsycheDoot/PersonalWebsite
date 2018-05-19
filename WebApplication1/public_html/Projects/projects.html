@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<header>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</header>
+<script onload="onLoad()">
+    var enabled = [false, false, false, false];
+    function onLoad() {
+        for (var i = 1; i <= 5; ++i) document.getElementById('mk' + i).style.display = "none";
+    }
+    function showMk(i) {
+        enabled[i] = !enabled[i];
+        if (enabled[i])
+            document.getElementById('mk' + i).style.display = "block";
+        else document.getElementById('mk' + i).style.display = "none";
+    }
+</script>
+<html>
+    <body>
+        <!-- HEADER -->
+        <div class="header">
+            <nav>
+                <div class="link"> <a href="../index.html">Home</a> </div>
+                <div class="link"> <a href="../About_Me/Family.html">About Me</a> </div>
+                <div class="link"> <a href="projects.html">Projects</a> </div>
+                <div class="link"> <a href="../index.html">Calendar</a> </div>
+            </nav>
+            <header>
+                <h1>Sean Rice</h1>
+            </header>
+            <div flex-basis="25%"></div>
+        </div>
+
+        <!-- BODY -->
+	    <div class="content">
+		    <!-- Body header -->
+		    <div class="container">
+			    <div class="item">
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h2>Sean's Domain</h2>
+                            <p>
+                                A list of all past and present projects I've worked on.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+		    </div>
+
+		    <!-- MID BODY-->
+		    <div class="container">
+			    <div class="item">
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Boat Survival Game - Under Development</h3>
+                            <p>Game I'm building in my free time. It's not even a demo at this point, but it feels good to publish my current build online.</p>
+                            <a href="Boat_Survival/index.html">WebGL Demo Here!</a>
+                        </div>
+                    </div>
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Grid-Based Map Builder Demo</h3>
+                            <p>Demo built to suit a need I don't have, so this project is dead at the moment. It's a neat concept though. Hopefully it can integrate it into a game.</p>
+                            <a href="Map_Builder/index.html">WebGL Demo Here!</a>
+                        </div>
+                    </div>
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Game of Life Demo</h3>
+                            <p>Quick and dirty demo I threw together in an afternoon. Wrote this in my Junior year AP Computer Science class.</p>
+                            <a href="Game_of_Life/index.html">WebGL Demo Here!</a>
+                        </div>
+                    </div>
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>First-Person Adventure Dungeon Crawler</h3>
+                            <p>Put this demo together over a weekend in sophmore year of High-School. It was supposed to be a first person dungeon crawler with AI. This is the first real game demo I put together, however I never got past making the first level. This was in part because map making was tedious, and the AI was not fun to beat. Because of these failures I decided to create the Grid-Based Map Builder and an AI Pathfinder.</p>
+                            <input type="button" name="answer" value="Pictures" onclick="showMk(5)" />
+                            <div id="mk5" display="none"><iframe src="https://www.youtube.com/embed/obZfT-oObAc" frameborder="0" allowfullscreen></iframe></iframe></div>
+                        </div>
+                    </div>
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Flashing Glasses - Mk4</h3>
+                            <p>I haven't made these yet, although I have an idea for the glasses. The lenses will be partially obscured with an 8x8 array of pixels and can be controlled using 2 8-bit shift registers and 2 8-channel multiplexors. In theory, a controller would send serial data to the shift register and the multiplexor would then determine the appropriate row to output the data. The multiplexor would probably be connected to an 3-bit counter circuit that the controller would increment, essentially telling the circuit which row to display.</p>
+                            <input type="button" name="answer" value="Pictures" onclick="showMk(4)" />
+                            <div id="mk4" display="none"><iframe src="mk4.html" name="mk4frame" allowTransparency="true" scrolling="yes" frameborder="0"></iframe></div>
+                        </div>
+                    </div>
+                </div>
+			    <div class="item">
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Flashing Glasses - Mk1</h3>
+                            <p>I created these the night before christmas eve 2015. After building the led heart I had 9 555s and 9 decade counters just lying around, so I slapped together these glasses quick and dirty. Finished around 3am.</p>
+                            <input type="button" name="answer" value="Pictures" onclick="showMk(1)" />
+                            <div id="mk1" display="none"><iframe src="mk1.html" name="mk1frame" allowTransparency="true" scrolling="yes" frameborder="0"></iframe></div>
+                        </div>
+                    </div>
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Flashing Glasses - Mk2</h3>
+                            <p>Inspired to make a more comfortable set of led glasses with a low profile, the Mk2 was born.</p>
+                            <input type="button" name="answer" value="Pictures" onclick="showMk(2)" />
+                            <div id="mk2" display="none"><iframe src="mk2.html" name="mk2frame" allowTransparency="true" scrolling="yes" frameborder="0"></iframe></div>
+                        </div>
+                    </div>
+                    <div class="secContentPadder">
+                        <div class="secContent">
+                            <h3>Flashing Glasses - Mk3</h3>
+                            <p>Not satisfied with the hardwired flashing pattern and relative heft of the glasses, I created the Mk3. This one used an arduino uno, so all of the lights could be individually addressed. I made several default patterns, however programming all of the patterns by hand proved tedious.</p>
+                            <input type="button" name="answer" value="Pictures" onclick="showMk(3)" />
+                            <div id="mk3" display="none"><iframe src="mk3.html" name="mk3frame" allowTransparency="true" scrolling="yes" frameborder="0"></iframe></div>
+                        </div>
+                    </div>
+                </div>
+		    </div>
+            <script>onLoad();</script>
+		    <footer></footer>
+	    </div>
+    </body>
+</html>
