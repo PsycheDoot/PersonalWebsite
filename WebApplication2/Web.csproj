@@ -163,11 +163,25 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Pics\Mk1_1.jpg" />
+    <Content Include="Pics\Mk1_2.jpg" />
+    <Content Include="Pics\Mk1_3.jpg" />
+    <Content Include="Pics\Mk1_4.jpg" />
+    <Content Include="Pics\Mk1_5.jpg" />
+    <Content Include="Pics\Mk2_2.jpg" />
+    <Content Include="Pics\Mk2_3.jpg" />
+    <Content Include="Pics\Mk2_4.jpg" />
+    <Content Include="Pics\Mk2_5.jpg" />
+    <Content Include="Pics\Mk3_3.jpg" />
+    <Content Include="Pics\Mk3_4.jpg" />
+    <Content Include="Pics\Mk3_5.jpg" />
+    <Content Include="Pics\mk4_1.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\bootstrap.css.map" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -193,6 +207,7 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Carousel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -204,7 +219,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <None Include="packages.config" />
@@ -229,7 +243,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>64697</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/Web</IISUrl>
+          <IISUrl>http://localhost/PersonalWebsite</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

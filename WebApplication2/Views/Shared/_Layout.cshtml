@@ -4,30 +4,80 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
+    @Scripts.Render("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    @Scripts.Render("https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js")
+    @Styles.Render("https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css")
     @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .card-deck{
+            margin-top:15px;
+            margin-bottom:15px;
+        }
+
+
+            .imageWrapper {
+                position: relative;
+                width: 10%;
+                padding-top: 10%;
+                overflow: hidden;
+                float: left;
+            }
+
+            .imagePosition {
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+            }
+
+            .imagePosition img {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            }
+
+            .imagePosition img.landscape {
+                max-height: 50%;
+                height: 50%;
+            }
+
+            .galleryArea .imagePosition img.portrait {
+                max-width: 50%;
+                width: 50%;
+            }
+
+            .galleryArea .imagePosition img.square {
+                max-width: 50%;
+                max-height: 50%;
+            }
+    </style>
 </head>
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Sean Rice", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
+            <div class="nav-link">
+                @Html.ActionLink("Home", "Index", "Home")
+            </div>
+            <div class="nav-link">
+                @Html.ActionLink("About", "About", "Home")
+            </div>
+            <div class="nav-link">
+                @Html.ActionLink("Projects", "Projects", "Home")
+            </div>
+            <div class="nav-link">
+                @Html.ActionLink("Contact", "Contact", "Home")
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container">
         @RenderBody()
         <hr />
         <footer>
@@ -35,8 +85,6 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>

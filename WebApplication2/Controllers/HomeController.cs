@@ -16,10 +16,20 @@ namespace WebApplication2.Controllers {
 			return View();
 		}
 
+		public ActionResult Projects () {
+			return View();
+		}
+
 		public ActionResult Contact () {
 			ViewBag.Message = "Your contact page.";
 
 			return View();
+		}
+
+		public ActionResult Carousel(string id, string[] src) {
+			ViewBag.id = id;
+			ViewBag.links = src;
+			return PartialView();
 		}
 	}
 }
