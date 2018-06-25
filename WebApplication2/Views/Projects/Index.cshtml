@@ -1,7 +1,46 @@
 ﻿
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Projects";
 }
 
-<h2>Index</h2>
+<h2>@ViewBag.Title</h2>
 
+<br/>
+<h3>Unity Engine</h3>
+<div class="card-deck">
+    <div class="card">
+        @{  string[] aboutSrc = {"bike_nugs.jpg", "pop_me.jpg", "jojo.jpg", "pc_rig.jpg" };
+            string id = "About-Preview";
+        }
+        @Html.Action("Carousel", "Home", new {id, src = aboutSrc})
+        <div class="card-body">
+            <h5>About</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="@Url.Action("About","Home")" class="btn btn-primary">Check it out!</a>
+        </div>
+    </div>
+    <div class="card">
+        @{ string[] projectsSrc = { "Mk1_1.jpg", "Mk1_4.jpg", "Mk2_2.jpg", "Mk2_4.jpg", "Mk2_5.jpg" };
+           id = "Projects-Preview";
+        }
+        @Html.Action("Carousel", "Home", new { id, src = projectsSrc })
+        <div class="card-body">
+            <h5>Projects</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="@Url.Action("Index","Projects")" class="btn btn-primary">Check it out!</a>
+        </div>
+    </div>
+</div>
+
+<br/>
+<h3>Circuitry</h3>
+<div class="card-deck">
+    <div class="card">
+        <img class="card-img-top" src="~/Pics/Mk2_2.jpg" alt="Card image cap">
+        <div class="card-body">
+            <h5>About</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="@Url.Action("About","Home")" class="btn btn-primary">Check it out!</a>
+        </div>
+    </div>
+</div>
