@@ -13,47 +13,6 @@
             margin-top:15px;
             margin-bottom:15px;
         }
-
-
-            .imageWrapper {
-                position: relative;
-                width: 10%;
-                padding-top: 10%;
-                overflow: hidden;
-                float: left;
-            }
-
-            .imagePosition {
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-            }
-
-            .imagePosition img {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-            }
-
-            .imagePosition img.landscape {
-                max-height: 50%;
-                height: 50%;
-            }
-
-            .galleryArea .imagePosition img.portrait {
-                max-width: 50%;
-                width: 50%;
-            }
-
-            .galleryArea .imagePosition img.square {
-                max-width: 50%;
-                max-height: 50%;
-            }
     </style>
 </head>
 
@@ -70,7 +29,7 @@
                 @Html.ActionLink("About", "About", "Home")
             </div>
             <div class="nav-link">
-                @Html.ActionLink("Projects", "Projects", "Home")
+                @Html.ActionLink("Projects", "Index", "Projects")
             </div>
             <div class="nav-link">
                 @Html.ActionLink("Contact", "Contact", "Home")
@@ -79,9 +38,9 @@
     </div>
     <div class="container">
         @RenderBody()
-        <hr />
+        <hr
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Sean Rice</p>
         </footer>
     </div>
 
