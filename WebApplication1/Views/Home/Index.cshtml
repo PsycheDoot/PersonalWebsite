@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron" style="margin-bottom:15px;">
+    <h1>ASP.NET</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+
+<div class="card-deck">
+    <div class="card">
+        @{
+            Web.Models.CarouselViewModel aboutModel = new Web.Models.CarouselViewModel();
+            aboutModel.id = "AboutPreview";
+            aboutModel.links = new string[] { "bike_nugs.jpg", "pop_me.jpg", "jojo.jpg", "pc_rig.jpg" };
+        }
+        @Html.Partial("~/Views/Shared/Carousel.cshtml", aboutModel)
+        <div class="card-body">
+            <h5>About</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="@Url.Action("About","Home")" class="btn btn-primary">Check it out!</a>
+        </div>
+    </div>
+    <div class="card">
+        @{ string[] projectsSrc = { "Mk1_1.jpg", "Mk1_4.jpg", "Mk2_2.jpg", "Mk2_4.jpg", "Mk2_5.jpg" };
+            string id = "Projects-Preview";
+        }
+        @Html.Partial("~/Views/Shared/Carousel.cshtml", aboutModel)
+        <div class="card-body">
+            <h5>Projects</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="@Url.Action("Index","Projects")" class="btn btn-primary">Check it out!</a>
+        </div>
+    </div>
+</div>
+
+<div class="card-deck">
+    <div class="card">
+        <img class="card-img-top" src="~/Pics/Mk2_2.jpg" alt="Card image cap">
+        <div class="card-body">
+            <h5>About</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="@Url.Action("About","Home")" class="btn btn-primary">Check it out!</a>
+        </div>
+    </div>
+</div>

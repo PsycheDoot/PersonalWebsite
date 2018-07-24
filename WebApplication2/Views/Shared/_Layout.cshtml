@@ -13,71 +13,30 @@
             margin-top:15px;
             margin-bottom:15px;
         }
-
-
-            .imageWrapper {
-                position: relative;
-                width: 10%;
-                padding-top: 10%;
-                overflow: hidden;
-                float: left;
+        @@media only screen and (max-width: 768px) {
+            [class*="col-"] {
+                width: 100%;
             }
-
-            .imagePosition {
-                position: absolute;
-                top: -50%;
-                left: -50%;
-                width: 200%;
-                height: 200%;
-            }
-
-            .imagePosition img {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-            }
-
-            .imagePosition img.landscape {
-                max-height: 50%;
-                height: 50%;
-            }
-
-            .galleryArea .imagePosition img.portrait {
-                max-width: 50%;
-                width: 50%;
-            }
-
-            .galleryArea .imagePosition img.square {
-                max-width: 50%;
-                max-height: 50%;
-            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                @Html.ActionLink("Sean Rice", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="nav-link">
-                @Html.ActionLink("Home", "Index", "Home")
-            </div>
-            <div class="nav-link">
-                @Html.ActionLink("About", "About", "Home")
-            </div>
-            <div class="nav-link">
-                @Html.ActionLink("Projects", "Projects", "Home")
-            </div>
-            <div class="nav-link">
-                @Html.ActionLink("Contact", "Contact", "Home")
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="@Url.Action("Index", "Home")">Sean Rice</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="@Url.Action("About", "Home")">About<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="@Url.Action("Projects", "Home")">Projects</a>
+                <a class="nav-item nav-link" href="@Url.Action("Contact", "Home")">Contact</a>
             </div>
         </div>
-    </div>
-    <div class="container">
+    </nav>
+
+    <div class="container col-8">
         @RenderBody()
         <hr />
         <footer>
