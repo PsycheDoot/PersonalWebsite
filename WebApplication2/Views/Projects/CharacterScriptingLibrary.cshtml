@@ -1,0 +1,294 @@
+﻿
+@{
+    ViewBag.Title = "CharacterScriptingLibrary";
+}
+
+
+<style>
+    .draggable-box {
+        position: absolute;
+        z-index = 9;
+        background-color: #f1f1f1;
+        border: 1px solid #d3d3d3;
+        text-align: center;
+        width: 200px;
+    }
+
+        .draggable-box > .node-header {
+            cursor: move;
+        }
+
+        .draggable-box > .arrow-drag-area {
+            cursor: grab;
+            cursor: -webkit-grab;
+            cursor: -moz-grab;
+            background-color: #d3d3d3;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+        }
+
+        .draggable-box > .dialogue-options {
+        }
+
+    .dialogue-options > .dialogue-option {
+    }
+</style>
+
+<h2>CharacterScriptingLibrary</h2>
+
+<p>I prototyped this tool so I could get a better understanding of branching dialogue trees in videogames such as Deus Ex, Fallout, and Mass Effect.</p>
+
+<button onclick="tree.addNode('Message')">Add Node</button>
+
+<div id="DraggableContainer" style="width:100%; height: 800px;">
+
+    <div class="draggable-box" id="template">
+        <div class="node-header"> <h3 data-bind="text: ID">Template</h3> </div>
+        <input data-bind="value: Dialogue" type="text" />
+        <p data-bind="text: Dialogue">Demo template... Demo template...</p>
+        <div class="dialogue-options">
+
+        </div>
+        <div class="arrow-drag-area">Drag from here to another node to create a dialogue option.</div>
+    </div>
+</div>
+
+<div id="template-dialogue-option" class="dialogue-option"><input data-bind="value: OptionText" /><span data-bind="text: TransitionID"></span></div>
+
+<script>
+    class SvgArrow {
+        constructor(x1, y1, x2, y2) {
+            this.StartX = x1;
+            this.StartY = y1;
+            this.EndX = x2;
+            this.EndY = y2;
+
+            // Create html element
+            var itm = document.getElementById("template-svg-arrow");
+            var cln = itm.cloneNode(true);
+            cln.setAttribute("x1", x1);
+            cln.setAttribute("y1", y1);
+            cln.setAttribute("x2", x2);
+            cln.setAttribute("y2", y2);
+            cln.id = null;
+            document.getElementById("arrows").appendChild(cln);
+        }
+    }
+
+    class DialogueTree {
+        constructor() {
+            this.Initialize();
+        }
+
+        Initialize() {
+            this.SvgLines = [];
+            this.DialogueNodes = {};
+            this.CurrentDialogueID = 0;
+            this.count = 0;
+        }
+
+        addNode(msg) {
+            this.DialogueNodes[this.count] = new DialogueNode(this.count, msg);
+            this.count++;
+        }
+
+        addDiagOption(startID, endID, msg) {
+            var diagOpt = this.DialogueNodes[startID].addDialogueOption(endID, msg);
+            var line = new LeaderLine(diagOpt.Element, document.getElementById("node" + endID));
+            line.setOptions({ startSocket: 'auto', endSocket: 'auto' });
+            line.path = 'auto';
+            this.SvgLines.push(line);
+        }
+
+        addArrow(startID, endID, x1, y1, x2, y2) {
+            var arrow = new SvgArrow(x1, y1, x2, y2);
+            this.SvgLines.push(arrow);
+            this.DialogueNodes[startID].OutgoingSvgArrows.push(arrow);
+            this.DialogueNodes[endID].IncomingSvgArrows.push(arrow);
+        }
+
+    }
+
+    class DialogueOption {
+        constructor(text, transID) {
+            this.Enabled = true;
+            this.OptionText = text;
+            this.TransitionID = transID;
+            this.Element = null;
+        }
+    }
+
+    class DialogueNode {
+        constructor(id, msg) {
+            // State keeping
+            this.ID = id;
+            this.Dialogue = msg;
+            this.DialogueOptions = [];
+            this.IncomingSvgArrows = [];
+            this.OutgoingSvgArrows = [];
+
+            // Create html element
+            var itm = document.getElementById("template");
+            var cln = itm.cloneNode(true);
+            cln.id = "node" + id;
+            document.getElementById("DraggableContainer").appendChild(cln);
+
+            // Data bindings
+            this.Dialogue = ko.observable(msg);
+            ko.applyBindings(this, document.getElementById("node" + id));
+            updateDraggables();
+        }
+
+        addDialogueOption(transition, optionMsg) {
+            // Create html element
+            var itm = document.getElementById("template-dialogue-option");
+            var cln = itm.cloneNode(true);
+            cln.id = null;
+
+            // Data bindings
+            var dopt = new DialogueOption(optionMsg, transition)
+            dopt.Element = cln;
+            dopt.Enabled = ko.observable(true);
+            dopt.OptionText = ko.observable(optionMsg);
+            dopt.TransitionID = ko.observable(transition);
+            ko.applyBindings(dopt, cln);
+
+            document.getElementById("node" + this.ID).getElementsByClassName("dialogue-options")[0].appendChild(cln);
+            updateDraggables();
+            this.DialogueOptions.push(dopt);
+            return dopt;
+        }
+    }
+
+    var tree = new DialogueTree();
+
+    function updateDraggables() {
+        var draggables = document.getElementsByClassName("draggable-box");
+        for (var i = 0; i < draggables.length; i++) {
+            dragElement(draggables[i]);
+            dragArrow(draggables[i]);
+        }
+    }
+
+    function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        var container = document.getElementById("DraggableContainer");
+        if (elmnt.getElementsByClassName("node-header")) {
+            elmnt.getElementsByClassName("node-header")[0].onmousedown = dragMouseDown;
+            //elmnt.getElementsByClassName("node-header").id = "";
+        } else {
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            console.log(true);
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            // set the element's new position:
+            var y = (elmnt.offsetTop - pos2);
+            var x = (elmnt.offsetLeft - pos1);
+
+            if (x > container.offsetLeft && x < container.offsetLeft + container.offsetWidth) {
+                elmnt.style.left = x + "px";
+            }
+
+            if (y > container.offsetTop && y < container.offsetTop + container.offsetHeight) {
+                elmnt.style.top = y + "px";
+            }
+
+            tree.SvgLines.forEach(function (line) {
+                line.position();
+            });
+        }
+
+        function closeDragElement() {
+            /* stop moving when mouse button is released:*/
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+
+
+    function dragArrow(elmnt) {
+        var startx = 0, starty = 0, endx = 0, endy = 0;
+        var StartID = null, EndID = null;
+
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        var container = document.getElementById("DraggableContainer");
+        if (elmnt.getElementsByClassName("arrow-drag-area")) {
+            elmnt.getElementsByClassName("arrow-drag-area")[0].onmousedown = dragMouseDown;
+            StartID = elmnt.getElementsByClassName("node-header")[0].getElementsByTagName("h3")[0].textContent;
+            //elmnt.getElementsByClassName("node-header").id = "";
+        } else {
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            startx = e.clientX;
+            starty = e.clientY;
+
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            //console.log(true);
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+        }
+
+        function closeDragElement(e) {
+            //console.log(e.target);
+            if (e.target.classList.contains("arrow-drag-area")) {
+                endx = e.clientX;
+                endy = e.clientY;
+                EndID = e.target.parentElement.getElementsByClassName("node-header")[0].getElementsByTagName("h3")[0].textContent;
+
+                if (!tree.DialogueNodes.hasOwnProperty(StartID)) console.log("The start node doesn't exist in tree somehow...");
+                else if (!tree.DialogueNodes.hasOwnProperty(EndID)) console.log("The end node doesn't exist in tree somehow...");
+                else {
+                    console.log("Dialogue option from " + StartID + " to " + EndID);
+                    tree.addDiagOption(StartID, EndID, "Main character response.");
+                    //tree.addArrow(StartID, EndID, startx, starty, endx, endy);
+                }
+            }
+            /* stop moving when mouse button is released:*/
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+    }
+</script>
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js'></script>
+<script src="~/Scripts/leader-line.min.js"></script>
+
