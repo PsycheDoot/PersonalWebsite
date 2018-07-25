@@ -18,5 +18,9 @@ namespace WebApplication2.Controllers
         {
             return View();
         }
+
+		public ActionResult CanvasScriptingTool() {
+			return View();
+		}
     }
 }

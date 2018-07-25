@@ -212,6 +212,7 @@
     <Content Include="Views\Shared\Carousel.cshtml" />
     <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\Projects\CharacterScriptingLibrary.cshtml" />
+    <Content Include="Views\Projects\CanvasScriptingTool.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
