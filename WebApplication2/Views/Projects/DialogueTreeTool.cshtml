@@ -1,0 +1,335 @@
+﻿
+@{
+    ViewBag.Title = "Character Scripting Tool";
+}
+<script src="https://cdn.rawgit.com/konvajs/konva/2.1.7/konva.min.js"></script>
+
+<script src="lodash.js"></script>
+<script src="dagre.js"></script>
+<script src="nomnoml.js"></script>
+
+<style>
+    .draggable-box {
+        position: absolute;
+        z-index = 9;
+        background-color: #f1f1f1;
+        border: 1px solid #d3d3d3;
+        text-align: center;
+        width: 200px;
+    }
+
+        .draggable-box > .node-header {
+            cursor: move;
+        }
+
+        .draggable-box > .arrow-drag-area {
+            cursor: grab;
+            cursor: -webkit-grab;
+            cursor: -moz-grab;
+            background-color: #d3d3d3;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Safari */
+            -khtml-user-select: none; /* Konqueror HTML */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+        }
+
+        .draggable-box > .dialogue-options {
+        }
+
+    .dialogue-options > .dialogue-option {
+    }
+
+    canvas {
+        border: 1px solid #d3d3d3;
+        background-color: #f1f1f1;
+    }
+</style>
+
+<h2>Character Scripting Tool</h2>
+
+<p>I prototyped this tool so I could get a better understanding of branching dialogue trees in videogames such as Deus Ex, Fallout, and Mass Effect.</p>
+
+<div id="container"></div>
+
+<button onclick="tree.addNode('Message')">Add Node</button>
+
+<script onload="">
+var FocusedNode = null;
+var GrabbedNode = null;
+var StartID = null, EndID = null;
+var LastCursorPos = null;
+var ArrowDrag = true;
+var TempArrow = null;
+
+function addNode(msg) {
+    tree.addNode(msg);
+
+}
+
+function removeNode(id) {
+    tree.DialogueNodes.splice(id, 1);
+}
+
+function setFocusNode(id) {
+    if (FocusedNode != null) {
+        FocusedNode.box.attrs.fill = "#00D2FF"
+    }
+
+    // Set focus on the canvas element and enable editing
+    console.log(id);
+    FocusedNode = tree.DialogueNodes[id];
+    FocusedNode.box.attrs.fill = "green";
+    layer.draw();
+}
+
+function grabNode(node) {
+    GrabbedNode = node;
+    node.nodeGroup.scale({
+        x: 1.2,
+        y: 1.2
+    });
+    layer.draw();
+}
+
+function dropNode() {
+    if (GrabbedNode != null) {
+        GrabbedNode.nodeGroup.scale({
+            x: 1,
+            y: 1
+        });
+    }
+    GrabbedNode = null;
+    layer.draw();
+}
+
+class DialogueTree {
+    constructor() {
+        this.Initialize();
+    }
+
+    Initialize() {
+        this.SvgLines = [];
+        this.DialogueNodes = {};
+        this.CurrentDialogueID = 0;
+        this.count = 0;
+    }
+
+    addNode(msg) {
+        this.DialogueNodes[this.count] = new DialogueNode(this.count, msg);
+        this.count++;
+    }
+
+    addDiagOption(startID, endID, msg) {
+        var diagOpt = this.DialogueNodes[startID].addDialogueOption(endID, msg);
+        console.log("Created a dialogue option from " + startID + " to " + endID);
+        //var line = new LeaderLine(diagOpt.Element, document.getElementById("node" + endID));
+        //line.setOptions({ startSocket: 'auto', endSocket: 'auto' });
+        //line.path = 'auto';
+        //this.SvgLines.push(line);
+    }
+}
+
+class DialogueOption {
+    constructor(text, transID) {
+        this.Enabled = true;
+        this.OptionText = text;
+        this.TransitionID = transID;
+        this.Element = null;
+        this.KonvaElement = new Konva.Group({
+            nodeObj: this
+        });
+
+        this.DeleteButton = new Konva.Rect({
+            nodeObj: this
+        });
+        this.KonvaElement.add(this.DeleteButton);
+
+        this.TextObj = new Konva.Text({
+            text: this.OptionText,
+            fill: 'black',
+            x: 0,
+            y: 0,
+            nodeObj: this
+        });
+        this.KonvaElement.add(this.TextObj);
+        layer.add(this.KonvaElement);
+    }
+}
+
+class DialogueNode {
+    constructor(id, msg) {
+        // State keeping
+        this.Name = "";
+        this.ID = id;
+        this.Dialogue = msg;
+        this.DialogueOptions = [];
+        //this.IncomingSvgArrows = [];
+        //this.OutgoingSvgArrows = [];
+
+        this.width = 200;
+        this.height = 300;
+
+        this.addKonvaCanvasElements();
+    }
+
+    addKonvaCanvasElements() {
+        this.nodeGroup = new Konva.Group({
+            nodeObj: this,
+            offsetX: this.width / 2,
+            offsetY: this.height / 2
+        });
+
+        this.box = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: this.width,
+            height: this.height,
+            fill: '#00D2FF',
+            stroke: 'black',
+            strokeWidth: 1,
+            nodeObj: this
+        });
+        this.nodeGroup.add(this.box);
+
+        this.header = new Konva.Text({
+            x: 0,
+            y: 0,
+            fill: 'black',
+            text: this.Name + "\t\t" + this.ID,
+            nodeObj: this
+        });
+        this.nodeGroup.add(this.header);
+
+        this.arrowDragArea = new Konva.Rect({
+            x: this.width - 25,
+            y: this.height - 25,
+            width: 25,
+            height: 25,
+            fill: 'grey',
+            nodeObj: this
+        });
+        this.nodeGroup.add(this.arrowDragArea);
+
+        this.nodeGroup.x(Math.random() * (stage.getWidth() / 2) + stage.getWidth() / 4);
+        this.nodeGroup.y(Math.random() * (stage.getHeight() / 2) + stage.getHeight() / 4);
+
+        this.box.on('doubleclick', function (evt) {
+            //console.log(evt);
+            setFocusNode(evt.target.attrs.nodeObj.ID);
+        });
+
+        this.box.on('mousedown', function (evt) {
+            if (evt.target.attrs.nodeObj != null) {
+                grabNode(evt.target.attrs.nodeObj);
+                console.log(GrabbedNode);
+            }
+        });
+
+        stage.on('mousemove', function (evt) {
+            if (GrabbedNode != null && LastCursorPos != null) {
+                var currentpos = GrabbedNode.nodeGroup.position();
+                var dx = stage.getPointerPosition().x - LastCursorPos.x;
+                var dy = stage.getPointerPosition().y - LastCursorPos.y;
+                GrabbedNode.nodeGroup.position({
+                    x: currentpos.x + dx,
+                    y: currentpos.y + dy
+                });
+                layer.draw();
+            } else if (ArrowDrag && StartID != null) {
+                var startpos = tree.DialogueNodes[StartID].arrowDragArea.getAbsolutePosition();
+                var endpos = stage.getPointerPosition();
+                TempArrow.attrs.points = [startpos.x + 12.5, startpos.y + 12.5, endpos.x + 1, endpos.y + 1];
+                stage.draw();
+            }
+            LastCursorPos = stage.getPointerPosition();
+        })
+
+        stage.on('mouseup', function (evt) {
+            dropNode();
+            if (ArrowDrag) {
+                ArrowDrag = false;
+                if (TempArrow != null)
+                    TempArrow.destroy();
+                TempArrow = null;
+                stage.draw();
+            }
+        });
+
+        // For adding dialogue options
+        this.arrowDragArea.on('mousedown', function (evt) {
+            StartID = null;
+            EndID = null;
+            if (evt.target.attrs.nodeObj.ID != null) StartID = evt.target.attrs.nodeObj.ID;
+            console.log("dragstart arrow on " + StartID);
+            ArrowDrag = true;
+            TempArrow = new Konva.Arrow({
+                fill: 'black',
+                stroke: 'black',
+                pointerLength: 10,
+                pointerWidth: 10,
+                hitFunc: function (context) {
+                    context.beginPath();
+                    context.closePath();
+                }
+            });
+            layer.add(TempArrow);
+        });
+
+        this.arrowDragArea.on('mouseup', function (evt) {
+            if (evt.target.attrs.nodeObj.ID != null) EndID = evt.target.attrs.nodeObj.ID;
+            if (EndID != null && StartID != null) {
+                tree.addDiagOption(StartID, EndID, "Dialogue choice...");
+            }
+            console.log("dragend arrow on " + EndID);
+        });
+
+        this.nodeGroup.on('mouseover', function () {
+            document.body.style.cursor = 'pointer';
+        });
+        this.nodeGroup.on('mouseout', function () {
+            document.body.style.cursor = 'default';
+        });
+
+        layer.add(this.nodeGroup);
+        stage.add(layer);
+    }
+
+    updateDialogueOptions() {
+
+    }
+
+    addDialogueOption(transition, optionMsg) {
+        var dopt = new DialogueOption(optionMsg, transition)
+        dopt.TextObj.moveTo(this.nodeGroup);
+        dopt.DeleteButton.moveTo(this.nodeGroup);
+        stage.draw();
+        this.DialogueOptions.push(dopt);
+        return dopt;
+    }
+}
+
+var tree = new DialogueTree();
+</script>
+<script>
+    // Konva Canvas stuff
+    var width = document.getElementById("container").offsetWidth;
+    var height = window.innerHeight;
+
+    var stage = new Konva.Stage({
+        container: 'container',
+        width: width,
+        height: height
+    });
+
+    var layer = new Konva.Layer();
+    var rectX = stage.getWidth() / 2 - 50;
+    var rectY = stage.getHeight() / 2 - 25;
+</script>
+
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js'></script>
+<script src="~/Scripts/leader-line.min.js"></script>
+
+
+

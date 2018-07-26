@@ -43,6 +43,7 @@
 <p>I prototyped this tool so I could get a better understanding of branching dialogue trees in videogames such as Deus Ex, Fallout, and Mass Effect.</p>
 
 <button onclick="tree.addNode('Message')">Add Node</button>
+<button onclick="generateJson()">Generate Json</button>
 
 <div id="DraggableContainer" style="width:100%; height: 800px;">
 
@@ -59,7 +60,27 @@
 
 <div id="template-dialogue-option" class="dialogue-option"><input data-bind="value: OptionText" /><span data-bind="text: TransitionID"></span></div>
 
+<textarea id="jsontext" readonly style="width:100%; height: 500px;"></textarea>
+
 <script>
+    function generateJson() {
+        console.log(tree);
+        var tree2 = Object.assign({}, tree);
+        tree2.SvgLines = null;
+        for (var key in tree2.DialogueNodes) {
+            var dn = tree2.DialogueNodes[key];
+            dn.DialogueOptions.forEach(function (dopt) {
+                dopt.Element = null;
+
+            });
+        }
+        var obj = ko.toJS(tree2);
+        
+        var json = ko.toJSON(obj, null, 4);
+        //var json = JSON.stringify(tree, null, 4);
+        document.getElementById("jsontext").innerHTML = json;
+    }
+
     class SvgArrow {
         constructor(x1, y1, x2, y2) {
             this.StartX = x1;
@@ -128,8 +149,6 @@
             this.ID = id;
             this.Dialogue = msg;
             this.DialogueOptions = [];
-            this.IncomingSvgArrows = [];
-            this.OutgoingSvgArrows = [];
 
             // Create html element
             var itm = document.getElementById("template");

@@ -213,6 +213,7 @@
     <Content Include="Views\Projects\Index.cshtml" />
     <Content Include="Views\Projects\CharacterScriptingLibrary.cshtml" />
     <Content Include="Views\Projects\CanvasScriptingTool.cshtml" />
+    <Content Include="Views\Projects\DialogueTreeTool.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
