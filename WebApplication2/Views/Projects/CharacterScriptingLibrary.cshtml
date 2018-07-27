@@ -1,7 +1,7 @@
 ﻿<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js'></script>
 <script src="~/Scripts/leader-line.min.js"></script>
 @{
-    ViewBag.Title = "CharacterScriptingLibrary";
+    ViewBag.Title = "Character Scripting Tool";
 }
 
 
@@ -15,31 +15,35 @@
         width: 200px;
     }
 
-        .draggable-box > .node-header {
-            cursor: move;
-        }
+    .draggable-box > .node-header {
+        cursor: move;
+    }
 
-        .draggable-box > .arrow-drag-area {
-            cursor: grab;
-            cursor: -webkit-grab;
-            cursor: -moz-grab;
-            background-color: #d3d3d3;
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none; /* Safari */
-            -khtml-user-select: none; /* Konqueror HTML */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none;
-        }
+    .draggable-box > .arrow-drag-area {
+        cursor: grab;
+        cursor: -webkit-grab;
+        cursor: -moz-grab;
+        background-color: #d3d3d3;
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+    }
 
-        .draggable-box > .dialogue-options {
-        }
+    .draggable-box > .dialogue-options {
+    }
 
     .dialogue-options > .dialogue-option {
     }
+
+    #DraggableContainer {
+
+    }
 </style>
 
-<h2>CharacterScriptingLibrary</h2>
+<h2>@ViewBag.Title</h2>
 
 <p>I prototyped this tool so I could get a better understanding of branching dialogue trees in videogames such as Deus Ex, Fallout, and Mass Effect.</p>
 
@@ -47,10 +51,11 @@
 <button onclick="generateJson()">Generate Json</button>
 <button onclick="loadLocalStore()">Load</button>
 <button onclick="saveLocalStore()">Save</button>
+<button onclick="newTree()">New</button>
 
 <div id="DraggableContainer" style="width:100%; height: 800px;">
 
-    <div class="draggable-box" id="template" >
+    <div class="draggable-box" id="template" hidden>
         <div class="node-header"> <h3 data-bind="text: ID">Template</h3> </div>
         <input data-bind="value: Dialogue" type="text" />
         <p data-bind="text: Dialogue">Demo template... Demo template...</p>
@@ -61,7 +66,7 @@
     </div>
 </div>
 
-<div id="template-dialogue-option" class="dialogue-option"><input data-bind="value: OptionText" /><span data-bind="text: TransitionID"></span></div>
+<div id="template-dialogue-option" class="dialogue-option" hidden><input data-bind="value: OptionText" /><span data-bind="text: TransitionID"></span></div>
 
 <textarea id="jsontext" readonly style="width:100%; height: 500px;"></textarea>
 
@@ -87,13 +92,19 @@ function generateJson() {
     return json;
 }
 
-function loadJson() {
-}
+    function loadJson() {
+    }
 
-function saveLocalStore() {
-    var json = generateJson();
-    localStorage.setItem('dialogueTreeLast', json);
-}
+    function saveLocalStore() {
+        var json = generateJson();
+        localStorage.setItem('dialogueTreeLast', json);
+    }
+
+    function newTree() {
+        if (tree) tree.Destroy();
+        tree = new DialogueTree();
+        location.reload();
+    }
 
 function loadLocalStore() {
     var json = localStorage.getItem('dialogueTreeLast');
@@ -128,6 +139,10 @@ class DialogueTree {
         this.DialogueNodes = {};
         this.CurrentDialogueID = 0;
         this.count = 0;
+    }
+
+    Destroy() {
+
     }
 
     addNode(msg, id) {
@@ -178,6 +193,7 @@ class DialogueNode {
         var cln = itm.cloneNode(true);
         cln.id = "node" + id;
         var elmnt = document.getElementById("DraggableContainer").appendChild(cln);
+        elmnt.removeAttribute("hidden");
 
         // Data bindings
         this.Dialogue = ko.observable(msg);
@@ -199,6 +215,7 @@ class DialogueNode {
         var itm = document.getElementById("template-dialogue-option");
         var cln = itm.cloneNode(true);
         cln.id = null;
+        cln.removeAttribute("hidden");
 
         // Data bindings
         var dopt = new DialogueOption(optionMsg, transition)
